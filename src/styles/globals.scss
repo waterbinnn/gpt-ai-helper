@@ -1,0 +1,35 @@
+@import "reset";
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+textarea {
+  overflow-y: auto;
+  resize: none;
+}
+
+.container {
+  min-width: 500px;
+  width: 70%;
+  height: 70vh;
+  margin: 20px;
+  margin: 100px auto 0;
+  border: 1px solid $black;
+  border-radius: 4px;
+  display: flex;
+}
