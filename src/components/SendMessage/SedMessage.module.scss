@@ -1,0 +1,39 @@
+.input-container {
+  position: relative;
+  width: 96%;
+  max-width: 650px;
+  margin: 0 auto;
+
+  .text-input {
+    width: 100%;
+    border: 1px solid $gray;
+    padding: 12px 15px;
+    border-radius: 4px;
+    padding-right: 70px;
+
+    &:focus {
+      border-color: $green;
+      outline: none;
+    }
+  }
+}
+
+.btn-send {
+  position: absolute;
+  bottom: 32%;
+  right: 14px;
+  color: $black;
+  padding: 8px 10px;
+  border-radius: 9999px;
+  background-color: $green;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $light-green;
+  }
+
+  &.disabled {
+    cursor: auto;
+    background-color: #a3a3a3;
+  }
+}

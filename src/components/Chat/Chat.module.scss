@@ -1,0 +1,47 @@
+.chat-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 10px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.bottom-section {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 20px 0;
+}
+
+.chat {
+  font-size: 13px;
+  vertical-align: middle;
+  padding: 10px 16px;
+  text-align: left;
+  background-color: $black;
+  color: #f3f3f3;
+  width: fit-content;
+  border-radius: 20px;
+  max-width: 70%;
+
+  &.user {
+    background-color: #ffe604;
+    color: $black;
+    align-self: end;
+  }
+}

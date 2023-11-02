@@ -1,0 +1,37 @@
+.side-bar {
+  height: 100%;
+  width: 244px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid $black;
+
+  .history {
+    margin: 10px;
+    height: 100%;
+
+    li {
+      padding: 15px 0;
+      cursor: pointer;
+      border-radius: 4px;
+      padding: 10px;
+
+      &:hover {
+        color: $green;
+      }
+    }
+  }
+}
+
+.new-btn {
+  padding: 20px;
+  font-size: 14px;
+  background-color: $black;
+  color: $green;
+  margin: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $light-black;
+  }
+}
