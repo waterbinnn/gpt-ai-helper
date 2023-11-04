@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    res.status(405).json({ message: "Method shuld be POST" });
+    res.status(405).json({ message: "Method should be POST" });
   } else {
     try {
       const { body } = req;
