@@ -30,7 +30,7 @@ export const Chat = () => {
     const data = {
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: message }],
-      temperature: 1.0,
+      temperature: 1.0, //creative 정도
       // max_tokens: 100, //답변길이
     };
 
