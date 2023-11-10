@@ -1,99 +1,150 @@
-# 기록용 
+# 기록용
 
 chatGPT api로 채팅앱 구현
 
-# about gpt api
+nextjs로 SSR 이 되기 때문에 따로 서버를 세팅할 필요 없이, pages/api 에 코드를 작성하면 서버에서 실행되며, 클라이언트에서 요청할 수 있는 API 엔드포인트를 만들 수 있다.
 
-## model 
+## model
+
 : **gpt-3.5-turbo-0613**
 
 docs
 [OpenAI Platform](https://platform.openai.com/docs/api-reference/chat/create)
 
-## 예시
+### stream 으로 실제 채팅앱처럼 구현하기
 
-### 1. “hello”
+<p>기존에 응답이 다 오면 화면에 보여주는 형식은 너무 오래 기다려야해서 사용자 경험에 좋지 않다고 느꼈다. 실제로 chatGPT 를 사용하면 응답을 stream 형식으로 준다. 관련 문서를 찾아보니 next.js 에서 stream 에 관련해 자세하게 설명해주고 있었다.</p>
+docs
 
-- 소요시간 : 1.96초
-- total tokens : 17
-<img width="505" alt="1" src="https://github.com/waterbinnn/gpt-api/assets/96714788/ea8032f8-fbf3-4540-b2ab-557c8939a1f8">
-<img width="587" alt="2" src="https://github.com/waterbinnn/gpt-api/assets/96714788/2678bdd4-2f5f-4aa9-b7c0-a63d754c193a">
+[openAI streaming in next.js](https://vercel.com/blog/an-introduction-to-streaming-on-the-web)
 
+### chat 구현
 
-hello 같은 단순한 요청은 빠른 답변이 옴 . 
+- useChat
 
+  useChat로 chatting app 구현을 쉽게 해줄 수 있다.
 
-반면 창의성 필요한 질문에는 대답이 느림 
-
-### 2. 계산식 “what is 10101010*38383838?”
-
-- 소요시간 : 6.69초
-- total tokens : 44
-<img width="636" alt="3" src="https://github.com/waterbinnn/gpt-api/assets/96714788/54be6a9e-1953-4660-b2ef-9b889df29f2e">
-<img width="565" alt="4" src="https://github.com/waterbinnn/gpt-api/assets/96714788/150edf4c-9299-4fa2-b297-594f5d029f54">
-
-
-### 3. 리액트의 동작 원리를 알려줘
-
-- 소요 시간 : 55.36초
-- total tokens : 731
-<img width="1333" alt="5" src="https://github.com/waterbinnn/gpt-api/assets/96714788/84fa9749-5eb2-4ba0-96e2-1efaa1591bf3">
-<img width="546" alt="6" src="https://github.com/waterbinnn/gpt-api/assets/96714788/66c12214-d5df-49a0-b7e2-e182ded69245">
-
-
-### 4. 제목을 지어줘
-
-- 소요시간 : 23.07초
-- total tokens : 379
-- 이어서 재질문했을 때 소요시간 : 8.99초
-<img width="641" alt="7" src="https://github.com/waterbinnn/gpt-api/assets/96714788/786de171-7883-4e1e-823c-d357f6d907f9">
-<img width="640" alt="8" src="https://github.com/waterbinnn/gpt-api/assets/96714788/2015fbbe-f659-4131-9ce9-0b2dd4f87289">
-
-
-### 5. 한국어 질문 vs 영어 질문 - 영어가 빠름빠름
-
-- 한국어 질문 소요시간 : 13.00 초
-- 영어 질문 소요시간 : 9.83초
-<img width="837" alt="9" src="https://github.com/waterbinnn/gpt-api/assets/96714788/7c0674b8-1faa-4506-93c8-1cea6c6ed18e">
-
-## About code
-
-```jsx
-{model: "gpt-3.5-turbo", messages: [{role: "user", content: "hello"}], temperature: 1, max_tokens: 100}
-max_tokens: 100
-messages: [{role: "user", content: "hello"}]
-0: {role: "user", content: "hello"}
-content: "hello"
-role: "user"
-model: "gpt-3.5-turbo"
-temperature: 1
+```tsx
+const {
+  input, //사용자 input state를 따로 딸 필요 없이 input state를 불러올 수 있음
+  handleInputChange, //setInput(()=>e.target.value) 해줄 필요 없이 input state 저장
+  handleSubmit, //submit 함수를 따로 만들어줄 필요 없이 내장되어있음
+  isLoading,
+  messages, //아래 설명
+} = useChat();
 ```
 
-```jsx
-{id: "chatcmpl-8H5rwESuqBtUzmI1iVhqhx4SVBjKd", object: "chat.completion", created: 1699084828,…}
-choices: [{index: 0, message: {role: "assistant",…}, finish_reason: "stop"}]
-0: {index: 0, message: {role: "assistant",…}, finish_reason: "stop"}
-finish_reason: "stop"
-index: 0
-message: {role: "assistant",…}
-created: 1699084828
-id: "chatcmpl-8H5rwESuqBtUzmI1iVhqhx4SVBjKd"
-model: "gpt-3.5-turbo-0613"
-object: "chat.completion"
-usage: {prompt_tokens: 28, completion_tokens: 93, total_tokens: 121}
-completion_tokens: 93
-prompt_tokens: 28
-total_tokens: 121
+messages : ai messages 를 받을 수 있음. 이게 제일 중요한데 기존에 setChatLogs state로 관리했던 message들을 객체로 깔끔하게 담아준다.
+role, content, createdAt, id 을 출력함.
+</br>
+짱인 점은 messages 내 ai 대답을 담는 index.content에 글씨가 하나씩 담기는 점이다. 서버에서 글자를 하나씩 보내줘서 이걸 map돌려 streaming 해줄 수 있는것!
+아래 이미지를 보면 처음엔 한글자만 담기다가 점점 다 담기는 것을 볼 수 있음!
+
+useChat 을 써준다고 다 되는 것은 아님.
+<br/>
+서버 측에서 동작할 API핸들러가 필요하다. app/chat.ts 파일을 작성해줘야 한다. 반드시 파일명을 chat.ts로 해줘야 함!
+
+```tsx
+//app/chat.ts
+
+import { Configuration, OpenAIApi } from "openai-edge";
+import { OpenAIStream, StreamingTextResponse } from "ai";
+
+export const runtime = "edge"; //추후 배포 환경 위해 작성
+
+const config = new Configuration({
+  //openAI API를 사용하기 위한 설정
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const openai = new OpenAIApi(config);
+
+// POST localhost:3000/api/chat
+export default async function POST(request: Request) {
+  const { messages } = await request.json();
+
+  const response = await openai.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    stream: true, //streaming 을 위해 꼭 써야함
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a creative helpful assistant. You are a youtube creater.", //AI 가 어떤 시스템인지를 인지시켜 준다. 여기서는 크리에이티브 한 크리에이터로 설정
+      },
+      ...messages,
+    ],
+  });
+
+  //openAI API의 응답을 스트림 형식으로 처리하고,
+  const stream = await OpenAIStream(response);
+
+  // 해당 스트림을 클라이언트로 응답으로 반환
+  return new StreamingTextResponse(stream);
+}
 ```
 
-- Temperature
-    
-    : 다양성(degree of diversity) 정도를 나타내며 높을수록 창의적인 결과물을 만들어준다. 
-    
-    온도(temperature)값의 범위는 0에서 무한대이지만 일반적으로 0.5 ~ 1.0 사이의 값이을 주로 사용 한다.
-    정보성 글일때는 낮은 온도를 사용하고 창의성이 필요한 경우에는 높은 온도로 설정하여 사용하면 된다. (지정 안했을 때의 기본 값은 0.7)
-    
-- Max Tokens
-    
-    텍스트의 최대 길이(max_tokens)는 생성되는 텍스트의 최대 길이를 지정하는 값.
-    기본값은 256이며 최대값은 2048.
+- client code
+
+```tsx
+//src/components/Chat.tsx
+
+<ul className={cx("feed")} ref={chatContainerRef}>
+  {messages.map((message: Message, index: number) => {
+    //주고받은 메세지들을 담은 messages 배열을 map 돌려서 채팅 형식으로 구성
+    return (
+      <li
+        key={message.id + index}
+        className={cx("chatting", { user: message.role === "user" })}
+      >
+        {message.role === "assistant" && <div className={cx("bot-icon")}></div>}
+        <div className={cx("multiple-chats")}>
+          {message.content.split("\n").map((text: string, index: number) => {
+            if (text === "") {
+              // 문단이 달라지면 다른 말풍선으로 보여주기 위함
+              return (
+                <p className={cx("nbsp")} key={message.id + index}>
+                  &nbsp;
+                </p>
+              );
+            } else {
+              return (
+                <p
+                  className={cx("chat", {
+                    user: message.role === "user",
+                  })}
+                  key={message.id + index}
+                >
+                  {text}
+                </p>
+              );
+            }
+          })}
+        </div>
+      </li>
+    );
+  })}
+</ul>
+```
+
+- user input 이 길어질 경우 textarea 의 height 높이 자동 조절이 가능하게 해주었다.
+
+```tsx
+const handleResizeHeight = useCallback(() => {
+  if (!textRef.current) {
+    return;
+  }
+  textRef.current.style.height = "100px";
+  textRef.current.style.height = textRef.current.scrollHeight + "px";
+}, []);
+```
+
+- 응답이 길어질 때 자동으로 scroll 이 내려가게 만들어 주었다.
+
+```tsx
+useEffect(() => {
+  if (chatContainerRef.current) {
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  }
+}, [messages]);
+```

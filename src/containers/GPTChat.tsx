@@ -1,11 +1,5 @@
-import { Chat } from "../components/Chat/Chat";
-import { SideBar } from "../components/SideBar/SideBar";
+import { Chat } from "../components";
 
 export const GPTChat = () => {
-  return (
-    <main className={"container"}>
-      <SideBar />
-      <Chat />
-    </main>
-  );
+  return <Chat />;
 };

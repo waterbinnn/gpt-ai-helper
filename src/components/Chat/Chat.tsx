@@ -1,81 +1,88 @@
-import { SendMessage } from "../SendMessage/SendMessage";
-import axios from "axios";
+import { Message, useChat } from "ai/react";
+import { useCallback, useEffect, useRef } from "react";
+
 import classNames from "classnames/bind";
 import styles from "./Chat.module.scss";
-import { useState } from "react";
 
 const cx = classNames.bind(styles);
 
-interface ChatLog {
-  type: string;
-  message: string;
-}
+export function Chat() {
+  const { input, handleInputChange, handleSubmit, isLoading, messages } =
+    useChat();
 
-export const Chat = () => {
-  const [userMsg, setUserMsg] = useState<string>("");
-  const [chatLog, setChatLog] = useState<ChatLog[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const textRef = useRef<HTMLTextAreaElement | null>(null);
+  const chatContainerRef = useRef<HTMLUListElement | null>(null);
 
-  const handleSendMessage = () => {
-    setChatLog((prevChatLog) => [
-      ...prevChatLog,
-      { type: "user", message: userMsg },
-    ]);
-    sendMessage(userMsg);
-    setUserMsg("");
-  };
+  const handleResizeHeight = useCallback(() => {
+    if (!textRef.current) {
+      return;
+    }
+    textRef.current.style.height = "100px";
+    textRef.current.style.height = textRef.current.scrollHeight + "px";
+  }, []);
 
-  const sendMessage = async (message: string) => {
-    const url = "/api/chat";
-    const data = {
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: message }],
-      temperature: 1.0, //creative 정도
-      // max_tokens: 100, //답변길이
-    };
-
-    setIsLoading(true);
-
-    await axios
-      .post(url, data)
-      .then((response) => {
-        setChatLog((prevChatLog) => [
-          ...prevChatLog,
-          { type: "bot", message: response.data.choices[0].message.content },
-        ]);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
-    <div className={cx("chat-container")}>
-      <h2 className={cx("title")}>CHAT</h2>
-      <ul className={cx("feed")}>
-        {chatLog.map((chat, index) => (
-          <li
-            key={index}
-            className={cx("chat", { user: chat.type === "user" })}
-          >
-            {chat.message}
-          </li>
-        ))}
-        {isLoading && (
-          <li key={chatLog.length} className={cx("chat")}>
-            Loading...
-          </li>
-        )}
-      </ul>
-      <div className={cx("bottom-section")}>
-        <SendMessage
-          userMsg={userMsg}
-          setUserMsg={setUserMsg}
-          getMessage={handleSendMessage}
-          isLoading={isLoading}
-        />
+    <main className={cx("chat-container")}>
+      <div className={cx("chat-wrap")}>
+        <ul className={cx("feed")} ref={chatContainerRef}>
+          {messages.map((message: Message, index: number) => {
+            return (
+              <li
+                key={message.id + index}
+                className={cx("chatting", { user: message.role === "user" })}
+              >
+                {message.role === "assistant" && (
+                  <div className={cx("bot-icon")}></div>
+                )}
+                <div className={cx("multiple-chats")}>
+                  {message.content
+                    .split("\n")
+                    .map((text: string, index: number) => {
+                      if (text === "") {
+                        return (
+                          <p className={cx("nbsp")} key={message.id + index}>
+                            &nbsp;
+                          </p>
+                        );
+                      } else {
+                        return (
+                          <p
+                            className={cx("chat", {
+                              user: message.role === "user",
+                            })}
+                            key={message.id + index}
+                          >
+                            {text}
+                          </p>
+                        );
+                      }
+                    })}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <form onSubmit={handleSubmit} className={cx("form-wrap")}>
+          <textarea
+            ref={textRef}
+            className={cx("message")}
+            value={input}
+            onChange={handleInputChange}
+            onInput={handleResizeHeight}
+          />
+          <button className={cx("btn-send")}>
+            {isLoading ? "Loading.." : "Send"}
+          </button>
+        </form>
       </div>
-    </div>
+    </main>
   );
-};
+}
