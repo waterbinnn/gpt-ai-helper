@@ -40,6 +40,15 @@ role, content, createdAt, id 을 출력함.
 짱인 점은 messages 내 ai 대답을 담는 index.content에 글씨가 하나씩 담기는 점이다. 서버에서 글자를 하나씩 보내줘서 이걸 map돌려 streaming 해줄 수 있는것!
 아래 이미지를 보면 처음엔 한글자만 담기다가 점점 다 담기는 것을 볼 수 있음!
 
+<img width="452" alt="스크린샷 2023-11-10 오후 6 21 12" src="https://github.com/waterbinnn/gpt-api/assets/96714788/b6f89845-956a-46f8-8d01-1f3294902879">
+
+<img width="524" alt="스크린샷 2023-11-10 오후 6 21 32" src="https://github.com/waterbinnn/gpt-api/assets/96714788/4eb890a4-07b7-41ae-b5d6-18aadbbee785">
+
+<img width="598" alt="스크린샷 2023-11-10 오후 6 21 47" src="https://github.com/waterbinnn/gpt-api/assets/96714788/4be8446f-e767-45da-9157-d1006385a647">
+
+
+
+
 useChat 을 써준다고 다 되는 것은 아님.
 <br/>
 서버 측에서 동작할 API핸들러가 필요하다. app/chat.ts 파일을 작성해줘야 한다. 반드시 파일명을 chat.ts로 해줘야 함!
@@ -148,3 +157,8 @@ useEffect(() => {
   }
 }, [messages]);
 ```
+
+### 최종 화면
+<img width="701" alt="스크린샷 2023-11-10 오후 6 01 07" src="https://github.com/waterbinnn/gpt-api/assets/96714788/a6d7ddb5-e1d3-4995-8878-664c5a345ea3">
+<img width="718" alt="스크린샷 2023-11-10 오후 6 01 14" src="https://github.com/waterbinnn/gpt-api/assets/96714788/318a21fd-0405-4999-99e7-2a0f072ca0e6">
+
