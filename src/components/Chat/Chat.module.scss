@@ -1,0 +1,116 @@
+.chat-container {
+  min-width: 350px;
+  width: 60%;
+  height: 80vh;
+  margin: 50px auto 0;
+  border: 1px solid #d6d6d6;
+  border-radius: 4px;
+  display: flex;
+}
+
+.chat-wrap {
+  width: 100%;
+  padding: 0px 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  padding: 20px 10px;
+  padding-bottom: 130px;
+}
+
+.chatting {
+  display: flex;
+
+  &.user {
+    justify-content: flex-end;
+  }
+}
+
+.multiple-chats {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat {
+  width: fit-content;
+  max-width: 80%;
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: 0px 10px 10px 10px;
+  background-color: #b41304;
+  color: #ffffff;
+
+  &.user {
+    max-width: 100%;
+    border-radius: 10px 0px 10px 10px;
+    background-color: #037219;
+  }
+}
+
+.nbsp {
+  height: 0px;
+}
+
+.bot-icon {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  background-color: #ffff17;
+  border-radius: 9999px;
+  position: relative;
+  margin-right: 8px;
+  &::after {
+    content: "🎅🏻";
+    position: absolute;
+    bottom: 2px;
+    left: 7px;
+  }
+}
+
+.form-wrap {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 1px;
+  left: 0px;
+  right: 2px;
+}
+
+.message {
+  width: 100%;
+  border: none;
+  border-top: 1px solid #d6d6d6;
+  padding: 8px;
+  min-height: 100px;
+  max-height: 300px;
+  outline: none;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-send {
+  position: absolute;
+  right: 8px;
+  bottom: 0px;
+  padding: 15px 20px;
+  color: #69ff3c;
+  cursor: pointer;
+
+  &:hover {
+    color: #1fb800;
+  }
+}
