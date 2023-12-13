@@ -1,4 +1,3 @@
-// route.ts Route Handlers
 import { Configuration, OpenAIApi } from "openai-edge";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 
@@ -10,7 +9,6 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
-// POST localhost:3000/api/chat
 export default async function POST(request: Request) {
   const { messages } = await request.json();
 

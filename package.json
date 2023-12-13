@@ -13,6 +13,7 @@
     "axios": "^1.6.0",
     "classnames": "^2.3.2",
     "eventsource-parser": "^1.1.1",
+    "langchain": "0.0.187",
     "next": "14.0.1",
     "openai-edge": "^1.2.2",
     "react": "18.2.0",

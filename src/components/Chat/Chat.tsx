@@ -41,7 +41,15 @@ export function Chat() {
                 {message.role === "assistant" && (
                   <div className={cx("bot-icon")}></div>
                 )}
-                <div className={cx("multiple-chats")}>
+                <p
+                  className={cx("chat", {
+                    user: message.role === "user",
+                  })}
+                  key={message.id + index}
+                >
+                  {message.content}
+                </p>
+                {/* <div className={cx("multiple-chats")}>
                   {message.content
                     .split("\n")
                     .map((text: string, index: number) => {
@@ -64,7 +72,7 @@ export function Chat() {
                         );
                       }
                     })}
-                </div>
+                </div> */}
               </li>
             );
           })}

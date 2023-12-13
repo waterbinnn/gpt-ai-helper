@@ -20,7 +20,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/Chat",
-    "src/api/chat.js"
+    "src/api/chat.ts"
   ],
   "exclude": ["node_modules"]
 }
