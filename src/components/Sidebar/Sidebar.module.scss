@@ -1,0 +1,36 @@
+.sidebar {
+    &-container {
+        margin: 0px 0 20px;
+    }
+
+
+    &-wrap {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    &-item {
+        border-radius: 2px;
+        width: 100%;
+        padding: 8px 0;
+        text-align: center;
+        background-color: $black;
+        color: $white;
+        cursor: pointer;
+        border-right: 1px solid $white;
+        font-size: 12px;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+            background-color: rgba(22, 22, 22, 0.973)
+        }
+
+        &:last-child {
+            border: none
+        }
+
+        &.active {
+            color: $green;
+        }
+    }
+}
