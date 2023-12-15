@@ -1,9 +1,12 @@
-import { Agents } from "../containers/Agents";
-import { GPTChat } from "../containers/GPTChat";
-import type { NextPage } from "next";
+import type { NextPage } from 'next';
+import { Chatbot } from '../containers';
 
 const Home: NextPage = () => {
-  return <Agents />;
+  return (
+    <div className='container'>
+      <Chatbot />
+    </div>
+  );
 };
 
 export default Home;
