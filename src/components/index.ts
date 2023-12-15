@@ -1,3 +1,3 @@
 export * from './Chat';
-export * from './AgentForm';
+export * from './TitleMaker';
 export * from './Sidebar';

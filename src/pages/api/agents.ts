@@ -1,28 +1,30 @@
-import { AIMessage, ChatMessage, HumanMessage } from "langchain/schema";
-import { BufferMemory, ChatMessageHistory } from "langchain/memory";
-import { GoogleCustomSearch, SerpAPI } from "langchain/tools";
-import { NextRequest, NextResponse } from "next/server";
-import { StreamingTextResponse, Message as VercelChatMessage } from "ai";
+import { AIMessage, ChatMessage, HumanMessage } from 'langchain/schema';
+import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
+import { GoogleCustomSearch, SerpAPI } from 'langchain/tools';
+import { NextRequest, NextResponse } from 'next/server';
+import { StreamingTextResponse, Message as VercelChatMessage } from 'ai';
 
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { initializeAgentExecutorWithOptions } from "langchain/agents";
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 
-export const runtime = "edge";
+export const runtime = 'edge';
 
 const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
-  if (message.role === "user") {
+  if (message.role === 'user') {
     return new HumanMessage(message.content);
-  } else if (message.role === "assistant") {
+  } else if (message.role === 'assistant') {
     return new AIMessage(message.content);
   } else {
     return new ChatMessage(message.content, message.role);
   }
 };
 
-const PREFIX_TEMPLATE = `You are a video creater.
- you have to answer creative way. in korean.
- Read script and answer to user's Input.
- Answer only three in the form of a number list. don't write other text except number list`;
+const PREFIX_TEMPLATE = `You are a helpful assistant.
+ you have to make title about message. answer creative way. in korean.
+ Answer only three in the form of a number list. don't write other text except number list. 
+ don't show message like "1.text" .
+show message just text. (without "" and list style number.) 
+ `;
 
 export default async function POST(req: NextRequest) {
   try {
@@ -30,7 +32,7 @@ export default async function POST(req: NextRequest) {
 
     const messages = (body.messages ?? []).filter(
       (message: VercelChatMessage) =>
-        message.role === "user" || message.role === "assistant"
+        message.role === 'user' || message.role === 'assistant'
     );
     const returnIntermediateSteps = body.show_intermediate_steps;
     const previousMessages = messages
@@ -41,19 +43,19 @@ export default async function POST(req: NextRequest) {
     const tools = [new GoogleCustomSearch(), new SerpAPI()];
 
     const chat = new ChatOpenAI({
-      modelName: "gpt-4",
+      modelName: 'gpt-4',
       temperature: body.temperature,
     });
 
     const executor = await initializeAgentExecutorWithOptions(tools, chat, {
-      agentType: "openai-functions",
+      agentType: 'openai-functions',
       verbose: true,
       returnIntermediateSteps,
       memory: new BufferMemory({
-        memoryKey: "chat_history",
+        memoryKey: 'chat_history',
         chatHistory: new ChatMessageHistory(previousMessages),
         returnMessages: true,
-        outputKey: "output",
+        outputKey: 'output',
       }),
       agentArgs: {
         prefix: PREFIX_TEMPLATE,
@@ -61,7 +63,7 @@ export default async function POST(req: NextRequest) {
     });
 
     const result = await executor.call({
-      input: `script: ${body.script}, user input: Read script. ${currentMessageContent}`,
+      input: `${currentMessageContent}`,
     });
 
     if (returnIntermediateSteps) {
