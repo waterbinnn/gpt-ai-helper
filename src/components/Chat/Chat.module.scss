@@ -1,11 +1,15 @@
 .chat-container {
   min-width: 350px;
-  width: 60%;
-  height: 80vh;
-  margin: 50px auto 0;
-  border: 1px solid #d6d6d6;
-  border-radius: 4px;
+  width: 100%;
+  height: 86vh;
+  margin: 20px auto 0;
+  border: 1px solid $light-gray;
   display: flex;
+  transition: all 0.3s ease-in-out;
+
+  @media screen and (max-width : 768px) {
+    width: 90%;
+  }
 }
 
 .chat-wrap {
@@ -44,16 +48,19 @@
   display: flex;
   margin-bottom: 10px;
   align-items: center;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.8;
   padding: 12px 16px;
   border-radius: 0px 10px 10px 10px;
-  background-color: #b41304;
-  color: #ffffff;
+  background-color: $gray;
+  color: $black;
 
   &.user {
     max-width: 100%;
     border-radius: 10px 0px 10px 10px;
-    background-color: #037219;
+    background-color: $purple;
+    color: $white;
+    max-width: 70%;
   }
 }
 
@@ -65,12 +72,13 @@
   width: 30px;
   min-width: 30px;
   height: 30px;
-  background-color: #ffff17;
+  background-color: $black;
   border-radius: 9999px;
   position: relative;
   margin-right: 8px;
+
   &::after {
-    content: "🎅🏻";
+    content: "👼";
     position: absolute;
     bottom: 2px;
     left: 7px;
@@ -80,19 +88,20 @@
 .form-wrap {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: flex-end;
   margin: 0 auto;
   position: absolute;
-  bottom: 1px;
+  bottom: 0px;
   left: 0px;
   right: 2px;
+  border-top: 1px solid $light-gray;
+  background-color: $white;
 }
 
 .message {
   width: 100%;
   border: none;
-  border-top: 1px solid #d6d6d6;
   padding: 8px;
   min-height: 100px;
   max-height: 300px;
@@ -103,14 +112,16 @@
 }
 
 .btn-send {
-  position: absolute;
-  right: 8px;
-  bottom: 0px;
-  padding: 15px 20px;
-  color: #69ff3c;
+  padding: 8px 10px;
+  margin: 0 8px 8px 0;
+  color: $green;
+  font-size: 12px;
+  background-color: $black;
+  border-radius: 50px;
   cursor: pointer;
+  transition: all 0.1s ease-out;
 
   &:hover {
-    color: #1fb800;
+    color: #a3ff1a;
   }
 }
