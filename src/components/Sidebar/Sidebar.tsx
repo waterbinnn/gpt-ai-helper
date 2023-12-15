@@ -19,19 +19,19 @@ export const Sidebar = () => {
           className={cx('sidebar-item', { active: pathname === '/' })}
           onClick={() => handleRouter('/')}
         >
-          Chatbot
+          Chatting
         </li>
         <li
           className={cx('sidebar-item', { active: pathname === '/title' })}
           onClick={() => handleRouter('/title')}
         >
-          Youtube Title
+          Title Maker
         </li>
         <li
           className={cx('sidebar-item', { active: pathname === '/script' })}
           onClick={() => handleRouter('/script')}
         >
-          Youtube Script
+          Script Maker
         </li>
       </ul>
     </nav>
