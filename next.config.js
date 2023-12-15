@@ -6,6 +6,7 @@ const nextConfig = {
   swcMinify: true,
   sassOptions: {
     includePaths: [path.join(__dirname, 'src/styles')],
+    prependData: `@import "_variables.scss";`,
   },
 };
 

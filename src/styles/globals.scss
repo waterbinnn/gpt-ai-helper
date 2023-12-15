@@ -1,3 +1,4 @@
+@import "fonts";
 @import "reset";
 
 html,
@@ -5,7 +6,7 @@ body {
   padding: 0;
   margin: 0;
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: pretendard, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -21,4 +22,16 @@ a {
 textarea {
   overflow-y: auto;
   resize: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+  min-width: 350px;
+  margin: 0 auto;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
 }
