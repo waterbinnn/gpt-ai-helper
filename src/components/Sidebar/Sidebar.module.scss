@@ -3,7 +3,6 @@
         margin: 0px 0 20px;
     }
 
-
     &-wrap {
         display: flex;
         justify-content: space-around;
@@ -18,7 +17,7 @@
         color: $white;
         cursor: pointer;
         border-right: 1px solid $white;
-        font-size: 12px;
+        font-size: 14px;
         transition: all 0.1s ease-in-out;
 
         &:hover {
@@ -31,6 +30,10 @@
 
         &.active {
             color: $green;
+        }
+
+        @media screen and (max-width : 768px) {
+            font-size: 12px;
         }
     }
 }
