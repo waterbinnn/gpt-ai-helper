@@ -1,0 +1,23 @@
+.input-text {
+    padding: 10px 8px;
+    border-radius: 2px;
+    border: 1px solid $gray;
+
+    &:active,
+    &:focus {
+        outline: none;
+        border-color: $green;
+    }
+}
+
+.title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.length {
+    font-size: 10px;
+    color: $dark-gray;
+    align-self: flex-end;
+}
