@@ -1,33 +1,86 @@
-import { Configuration, OpenAIApi } from "openai-edge";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { AIMessage, ChatMessage, HumanMessage } from 'langchain/schema';
+import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
+import { GoogleCustomSearch, SerpAPI } from 'langchain/tools';
+import { NextRequest, NextResponse } from 'next/server';
+import { StreamingTextResponse, Message as VercelChatMessage } from 'ai';
 
-export const runtime = "edge";
+import { ChatOpenAI } from 'langchain/chat_models/openai';
+import { initializeAgentExecutorWithOptions } from 'langchain/agents';
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const runtime = 'edge';
 
-const openai = new OpenAIApi(config);
+const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
+  if (message.role === 'user') {
+    return new HumanMessage(message.content);
+  } else if (message.role === 'assistant') {
+    return new AIMessage(message.content);
+  } else {
+    return new ChatMessage(message.content, message.role);
+  }
+};
 
-export default async function POST(request: Request) {
-  const { messages } = await request.json();
+const PREFIX_TEMPLATE = `You are a helpful smart assistant. knows every area.`;
 
-  const response = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    stream: true,
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are a creative helpful assistant. You are a youtube creater.",
+export default async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+
+    const messages = (body.messages ?? []).filter(
+      (message: VercelChatMessage) =>
+        message.role === 'user' || message.role === 'assistant'
+    );
+    const returnIntermediateSteps = body.show_intermediate_steps;
+    const previousMessages = messages
+      .slice(0, -1)
+      .map(convertVercelMessageToLangChainMessage);
+    const currentMessageContent = messages[messages.length - 1].content;
+
+    const tools = [new GoogleCustomSearch(), new SerpAPI()];
+
+    const chat = new ChatOpenAI({
+      modelName: 'gpt-4',
+      temperature: 0.5,
+    });
+
+    const executor = await initializeAgentExecutorWithOptions(tools, chat, {
+      agentType: 'openai-functions',
+      verbose: true,
+      returnIntermediateSteps,
+      memory: new BufferMemory({
+        memoryKey: 'chat_history',
+        chatHistory: new ChatMessageHistory(previousMessages),
+        returnMessages: true,
+        outputKey: 'output',
+      }),
+      agentArgs: {
+        prefix: PREFIX_TEMPLATE,
       },
-      ...messages,
-    ],
-  });
+    });
 
-  //openAI 데이터를 stream 형식으로 생성
-  const stream = await OpenAIStream(response);
+    const result = await executor.call({
+      input: `${currentMessageContent}`,
+    });
 
-  // send the stream as a response to our client
-  return new StreamingTextResponse(stream);
+    if (returnIntermediateSteps) {
+      return NextResponse.json(
+        { output: result.output, intermediate_steps: result.intermediateSteps },
+        { status: 200 }
+      );
+    } else {
+      const textEncoder = new TextEncoder();
+      const fakeStream = new ReadableStream({
+        async start(controller) {
+          for (const character of result.output) {
+            controller.enqueue(textEncoder.encode(character));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+          }
+          controller.close();
+        },
+      });
+
+      return new StreamingTextResponse(fakeStream);
+    }
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
 }

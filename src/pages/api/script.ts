@@ -1,6 +1,6 @@
 import { AIMessage, ChatMessage, HumanMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { GoogleCustomSearch, SerpAPI } from 'langchain/tools';
+import { GoogleCustomSearch } from 'langchain/tools';
 import { NextRequest, NextResponse } from 'next/server';
 import { StreamingTextResponse, Message as VercelChatMessage } from 'ai';
 
@@ -20,10 +20,7 @@ const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
 };
 
 const PREFIX_TEMPLATE = `You are a helpful assistant.
- you have to make title about message. answer creative way. in korean.
- Answer only three in the form of a number list. don't write other text except number list. 
- don't show message like "1.text" .
-show message just text. (without "" and list style number.) 
+ you have to write creative story about message. in korean.
  `;
 
 export default async function POST(req: NextRequest) {
@@ -40,7 +37,7 @@ export default async function POST(req: NextRequest) {
       .map(convertVercelMessageToLangChainMessage);
     const currentMessageContent = messages[messages.length - 1].content;
 
-    const tools = [new GoogleCustomSearch(), new SerpAPI()];
+    const tools = [new GoogleCustomSearch()];
 
     const chat = new ChatOpenAI({
       modelName: 'gpt-4',
@@ -63,7 +60,7 @@ export default async function POST(req: NextRequest) {
     });
 
     const result = await executor.call({
-      input: `${currentMessageContent}`,
+      input: `search about '${currentMessageContent}' on internet. make new creative story`,
     });
 
     if (returnIntermediateSteps) {
