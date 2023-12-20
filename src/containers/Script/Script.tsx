@@ -86,6 +86,28 @@ export const Script = () => {
                 >
                   {message.role === 'assistant'
                     ? message.content
+                        .split('\n')
+                        .map((text: string, index: number) => {
+                          if (text === '') {
+                            return (
+                              <p
+                                className={cx('nbsp')}
+                                key={message.id + index}
+                              >
+                                &nbsp;
+                              </p>
+                            );
+                          } else {
+                            return (
+                              <p
+                                className={cx('chat')}
+                                key={message.id + index}
+                              >
+                                {text}
+                              </p>
+                            );
+                          }
+                        })
                     : `주제 : ${message.content}`}
                   {message.role === 'assistant' && (
                     <div className={cx('icon-copy')}>

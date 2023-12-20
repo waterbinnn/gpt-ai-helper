@@ -20,7 +20,7 @@ const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
 };
 
 const PREFIX_TEMPLATE = `You are a helpful assistant.
- you have to write creative story about message. in korean.
+ you have to write creative story about message. 
  `;
 
 export default async function POST(req: NextRequest) {
@@ -64,10 +64,7 @@ export default async function POST(req: NextRequest) {
     });
 
     if (returnIntermediateSteps) {
-      return NextResponse.json(
-        { output: result.output, intermediate_steps: result.intermediateSteps },
-        { status: 200 }
-      );
+      return NextResponse.json({ output: result.output }, { status: 200 });
     } else {
       const textEncoder = new TextEncoder();
       const fakeStream = new ReadableStream({
