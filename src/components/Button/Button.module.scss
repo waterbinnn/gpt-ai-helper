@@ -1,0 +1,41 @@
+.btn-send {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    align-self: flex-end;
+    border: 1px solid $green;
+    background-color: $white;
+    color: $green;
+    padding: 12px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+
+
+    &:hover {
+        background-color: $green;
+        color: $white;
+    }
+
+    &:disabled {
+        background-color: $light-gray;
+        border-color: $gray;
+        color: $gray;
+        cursor: no-drop;
+    }
+
+    .text {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.icon {
+    svg {
+        background-color: $light-gray !important;
+        width: 20px;
+        height: 20px;
+    }
+}
