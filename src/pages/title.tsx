@@ -1,3 +1,3 @@
-import { Title } from '../containers/Youtube';
+import { Title } from '../containers';
 
 export default Title;
