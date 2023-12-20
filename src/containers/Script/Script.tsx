@@ -76,11 +76,11 @@ export const Script = () => {
             <>
               <div
                 key={message.id}
-                className={'messages'}
+                className={cx('messages')}
                 onClick={() => handleCopy(message.content)}
               >
                 <div
-                  className={cx('message', {
+                  className={cx('message', 'script', {
                     input: message.role === 'user',
                   })}
                 >

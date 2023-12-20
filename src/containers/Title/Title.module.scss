@@ -52,8 +52,7 @@
 
 .message {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    justify-content: space-between;
     padding: 12px 8px;
     border-radius: 4px;
     font-size: 13px;
@@ -65,10 +64,15 @@
     transition: all 0.2s ease-in-out;
     position: relative;
 
+
     .nbsp {
         height: 0px;
     }
 
+    &.script {
+        flex-direction: column;
+        gap: 10px;
+    }
 
     &:hover {
         border-color: $green;
@@ -89,6 +93,8 @@
         font-weight: 400;
         cursor: default
     }
+
+
 }
 
 .icon-copy {
