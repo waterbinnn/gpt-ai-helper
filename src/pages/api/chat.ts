@@ -1,6 +1,6 @@
 import { AIMessage, ChatMessage, HumanMessage } from 'langchain/schema';
 import { BufferMemory, ChatMessageHistory } from 'langchain/memory';
-import { GoogleCustomSearch, SerpAPI } from 'langchain/tools';
+import { GoogleCustomSearch } from 'langchain/tools';
 import { NextRequest, NextResponse } from 'next/server';
 import { StreamingTextResponse, Message as VercelChatMessage } from 'ai';
 
@@ -35,7 +35,7 @@ export default async function POST(req: NextRequest) {
       .map(convertVercelMessageToLangChainMessage);
     const currentMessageContent = messages[messages.length - 1].content;
 
-    const tools = [new GoogleCustomSearch(), new SerpAPI()];
+    const tools = [new GoogleCustomSearch()];
 
     const chat = new ChatOpenAI({
       modelName: 'gpt-4',
