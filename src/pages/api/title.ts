@@ -18,7 +18,7 @@ const PREFIX_TEMPLATE = `You are a helpful assistant.
 
 export default async function POST(request: Request) {
   const body = await request.json();
-  console.log(body);
+
   const response = await openai.createChatCompletion({
     model: 'gpt-4',
     stream: true,
